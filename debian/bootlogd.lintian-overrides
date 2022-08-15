@@ -1,0 +1,5 @@
+# Registered in "postrm" scripts, but not recognized by Lintian.
+bootlogd: script-in-etc-init.d-not-registered-via-update-rc.d
+
+bootlogd: init.d-script-missing-dependency-on-local_fs
+bootlogd: init.d-script-depends-on-all-virtual-facility etc/init.d/stop-bootlogd required-start

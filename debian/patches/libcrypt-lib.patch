@@ -1,0 +1,11 @@
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -95,7 +95,7 @@
+ endif
+ 
+ # Additional libs for GNU libc / multiarch on Debian based systems.
+-ifneq ($(wildcard $(ROOT)/usr/lib/*/libcrypt.*),)
++ifneq ($(wildcard $(ROOT)/usr/lib/*/libcrypt.*)(wildcard $(ROOT)/lib/*/libcrypt.*),)
+ ifneq ($(findstring -lcrypt, $(SULOGINLIBS)), -lcrypt)
+   SULOGINLIBS	+= -lcrypt
+ endif
