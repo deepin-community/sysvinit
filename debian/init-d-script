@@ -7,7 +7,7 @@ __init_d_script_name="$1"
 shift
 
 # Define LSB log_* functions.
-# Depend on lsb-base (>= 3.2-14) to ensure that this file is present
+# Depend on sysvinit-utils (>= 3.05-1) to ensure that this file is present
 # and status_of_proc is working.
 . /lib/lsb/init-functions
 

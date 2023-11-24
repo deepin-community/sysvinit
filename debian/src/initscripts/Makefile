@@ -27,11 +27,15 @@ install:
 	chmod 755 $(DESTDIR)$(sysconfdir)/init.d/[a-z]*
 	chmod 755 $(DESTDIR)$(sysconfdir)/network/if-up.d/[a-z]*
 	chmod 755 $(DESTDIR)$(sysconfdir)/rc.local
+	chmod 755 $(DESTDIR)$(sysconfdir)/rc.shutdown
 	chmod 644 $(DESTDIR)/lib/init/*.sh
 	chmod -R g-w $(DESTDIR)
 
 	$(INSTALL) -d $(DESTDIR)$(sbindir)/.
 	$(INSTALL) sbin/fsck.nfs $(DESTDIR)$(sbindir)/fsck.nfs
+
+	$(INSTALL_DATA) -Dt $(DESTDIR)/usr/lib/udev/rules.d usr/lib/udev/rules.d/hwclock.rules
+	$(INSTALL) usr/lib/udev/hwclock-set $(DESTDIR)/usr/lib/udev/hwclock-set
 
 	$(INSTALL) -d $(DESTDIR)/usr/share/man/man8
 	$(INSTALL_DATA) man/fsck.nfs.8 \

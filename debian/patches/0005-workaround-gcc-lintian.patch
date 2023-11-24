@@ -5,7 +5,7 @@
 
 --- a/src/init.c
 +++ b/src/init.c
-@@ -1567,12 +1567,17 @@
+@@ -1568,12 +1568,17 @@
  	if (!action || !*action)
  			strcpy(err, "missing action field");
  	if (id && strlen(id) > sizeof(utproto.ut_id))
