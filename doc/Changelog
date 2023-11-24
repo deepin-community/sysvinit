@@ -1,3 +1,92 @@
+sysvinit (3.08) released; urgency=low
+    * floppym provided patch which causes the halt command
+      to call "shutdown -h -H" instead of "shutdown -h" when
+      halt is invoked without parameters. This forces the shutdown
+      command to set the INIT_HALT variable and assume, unless other
+      conditions apply, that the "halt" call really wants to halt the
+      machine and INIT_HALT should be set. In other words we
+      assume halt wants to halt unless told otherwise.
+      Addresses downstream Gentoo bug ID 911257.
+
+    * Applied a patch from floppm which adds kexec option to the halt command.
+
+    * Updated halt documentation and help output to display parameters in
+      alphabetical order.
+
+
+sysvinit (3.07) released; urgency=low
+    * Fixed killall5 so that processes in the omit list are
+      not sent any signals, including SIGSTOP.
+    * Fixed usage message for killall5 to be more accurate.
+    * pidof was not returning PIDs of programs which were launched
+      using a symbolic link. (ie /tmp/sleep when /tmp/sleep links to /usr/bin/sleep).
+      This is now fixed as we check both the realpath and symbolic path for processes.
+      In other words, "pidof /tmp/sleep" and "pidof /usr/bin/sleep" will return
+      the same PIDs when /tmp/sleep is a symbolic link to /usr/bin/sleep.
+    * Fixed memory initialization error in pidof. Fix provided by Markus Fischer.
+    * Accepted patch from Mark Hindley  which avoids clearing realpath information
+      in pidof when trying to find matching executables.
+
+
+sysvinit (3.06) released; urgency=low
+    * Mark Hindley fixed typo in es.po
+    * Mark Hindley cleaned up translation code in src/Makefile. 
+    * Drop sulogin from Debian build. Removed libcrypt-dev dependency.
+    * Fixed pt translation pages which were failing due to mis-matched
+      open/close tags.
+    * Makefile now respects ROOT prefix when setting up pidof-to-killall5
+      symbolic link.
+    * Removed redundant translation files from man directory.
+    * Makefile now respects DESTDIR. User can specify either ROOT= or DESTDIR=
+      to set install prefix.
+
+
+sysvinit (3.05) released; urgency=low
+    * Helge Kreutzmann provided updated Makefile for
+      translation of manual pages. This has been added
+      to the man directory.
+    * Added sys/sysmacros.h include in mountpoint.c to fix
+      compiler errors on systems where major/minor macros were not defined.
+    * Applied patches from Mark Hindley to clean up man page
+      Makefile, translations and installs of new man pages.
+    * Remove reliance on linux/fs.h as it conflicts with glibc 2.36.
+      Patch provided by lucascars.
+
+sysvinit (3.04) released; urgency=low
+    * Mark Hindley supplied patch to make bootlogd compile
+      on GNU Hurd systems. Was missing major/minor macro.
+
+sysvinit (3.03) released; urgency=low
+    * Fixed formatting in init.8 man page.
+      Patch provided by Mark Hindley.
+    * Fixed compile error on GNU Hurd and musl-base systems. Due to missing MAX_PATH definition.
+      Error reported by Mark Hindly.
+
+sysvinit (3.02) released; urgency=low
+    * Added q and Q flags to synopsis in shutdown manual page.
+    * Applied fixes for markup and spacing in manual pages.
+      Patch provided by Mario Blattermann.
+    * Added translation framework (po4a) from Mario Blttermann.
+    * Added Makefile for man/ directory. Will handle translations
+      and substitutions.
+    * Applied new translations for multiple languages from Mario Blattermann.
+    * Added ability to use "@" symbol in command named in the inittab file. This
+      treats commands as literal and does not launch a shell to interpret them.
+    * Updated inittab manual page to include overview of symbols which trigger
+      a shell interpretor and how to disable them using the @ symbol.
+    * Introduced change which adds error checking in bootlogd when performing
+      chdir(). - Provided by Alexander Vickberg 
+    * Add check for console using TIOCGDEV on Linux systems in bootlogd to
+      make finding console more robust. - Provided by Alexander Vickberg
+ 
+
+sysvinit (3.01) released; urgency=low
+    * Default to showing processes in the uninterruptable state (D).
+    The -z flag no longer affects whether processes in D state are shown.
+    The -z flag does still toggle whether zombie (Z) processes are shown.
+
+    * Removed unnecessary check which is always true from init tab parsing.
+
 sysvinit (3.00) released; urgency=low
 
     * Applied patch from Matthias Schiffer which allows bootlogd to read from
