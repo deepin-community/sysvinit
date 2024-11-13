@@ -278,7 +278,7 @@ domount () {
 					is_empty_dir "$MTPT" >/dev/null 2>&1 || log_warning_msg "Files under mount point '$MTPT' will be hidden."
 				fi
 				mount $MOUNTFLAGS -t $FSTYPE $CALLER_OPTS $FSTAB_OPTS $FS_OPTS $DEVNAME $MTPT
-				if [ "$FSTYPE" = "tmpfs" -a -x /sbin/restorecon ]; then
+				if [ "$FSTYPE" = "tmpfs" ] && [ -x /sbin/restorecon ]; then
 					/sbin/restorecon $MTPT
 				fi
 			fi
@@ -724,10 +724,11 @@ is_fastboot_active() {
 
 # This function does not actually belong here; it is duct-tape solution
 # for #901289.
-logsave_best_effort () {
-	if [ -x /sbin/logsave ] ; then
+logsave_best_effort() {
+	if [ -x /sbin/logsave ] && [ -e "${FSCK_LOGFILE}" ]; then
 		logsave -s "${FSCK_LOGFILE}" "$@"
 	else
+		log_failure_msg "Cannot persist the following output on disc"
 		"$@"
 	fi
 }

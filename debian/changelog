@@ -1,3 +1,112 @@
+sysvinit (3.11-1) unstable; urgency=medium
+
+  * New upstream version 3.11.
+    - includes manpage fixes (Closes: #905244, #1078731,
+      #1082812).
+  * Drop patch fixed upstream.
+
+ -- Mark Hindley <leepen@debian.org>  Wed, 23 Oct 2024 09:33:27 +0100
+
+sysvinit (3.10-3) unstable; urgency=medium
+
+  * init-d-script:
+    - support capabilities by wrapping s-s-d with setpriv.
+    - when stopping, send CONT signal before TERM.
+
+ -- Mark Hindley <leepen@debian.org>  Tue, 15 Oct 2024 18:46:37 +0100
+
+sysvinit (3.10-2) unstable; urgency=medium
+
+  * rc.local: fix misplaced stop levels in LSB header. (Closes: #1081435)
+
+ -- Mark Hindley <leepen@debian.org>  Wed, 11 Sep 2024 18:09:54 +0100
+
+sysvinit (3.10-1) unstable; urgency=medium
+
+  * New upstream version 3.10
+    - includes reformatting of shutdown.8 (Closes: #1076822).
+  * d/control: Update versioned Conflicts to handle DEP17 ineffective
+    diversions for more diverters.  Thanks to Helmut Grohne
+    <helmut@subdivi.de> (Closes: #1065146)
+
+ -- Mark Hindley <leepen@debian.org>  Tue, 06 Aug 2024 16:16:21 +0100
+
+sysvinit (3.09-2) unstable; urgency=medium
+
+  [ Mark Hindley ]
+  * bootlogd.init: fix path in check for running under systemd.
+    (Closes: #1072011)
+  * Declare interest in libc-upgrade trigger. (Closes: #1072375)
+  * d/sysvinit-core.postinst:
+    - refactor.
+    - remove obsolete /dev/initctl -> /run migration.
+    - support "triggered".
+  * d/control: bump Standards Version (no changes).
+
+  [ Thorsten Glaser <tg@mirbsd.de> ]
+  * Save initramfs fsck logs to /var/log/fsck/.
+
+ -- Mark Hindley <leepen@debian.org>  Thu, 13 Jun 2024 18:20:51 +0100
+
+sysvinit (3.09-1) unstable; urgency=medium
+
+  * New upstream version 3.09
+  * Drop patch applied upstream.
+  * /etc/init.d/rc.local: stop in runlevels 0 6 so rc.shutdown is run.
+  * d/control:
+    - add Salsa as Homepage for initscripts and sysv-rc.
+    - fix typo in sysvinit-utils description. (Closes: #1069177)
+
+ -- Mark Hindley <leepen@debian.org>  Wed, 17 Apr 2024 12:58:59 +0100
+
+sysvinit (3.08-7) unstable; urgency=medium
+
+  [ Johannes Schauer Marin Rodrigues ]
+  * sysvinit-core.postinst: remove code handling /etc/inittab with missing
+    entries (Closes: #1063629)
+  * initscripts.postinst: avoid calling uname for non-empty DPKG_ROOT
+    (Closes: #1063639)
+
+  [ Helmut Grohne ]
+  * DEP17: Move files to /usr. (Closes: #1060139)
+
+  [ Mark Hindley ]
+  * Delete unused debconf machinery now there are no templates (lintian).
+
+ -- Mark Hindley <leepen@debian.org>  Thu, 29 Feb 2024 11:22:45 +0000
+
+sysvinit (3.08-6) unstable; urgency=medium
+
+  * d/sysvinit-core.postinst: don't do_restart() for new installations.
+    (Closes: #1061280)
+
+ -- Mark Hindley <leepen@debian.org>  Thu, 25 Jan 2024 17:43:34 +0000
+
+sysvinit (3.08-5) unstable; urgency=medium
+
+  * Add Greek debconf translation with thanks to Dimitris
+    <dimitris@stinpriza.org>.
+  * hwclock.sh: support HURD direct ISA I/O. (Closes: #1057634)
+  * d/control: initscripts demote util-linux-extra to Recommends.
+  * Restore sequencing prefix 85 to hwclock rules file.
+
+
+ -- Mark Hindley <leepen@debian.org>  Wed, 06 Dec 2023 15:02:37 +0000
+
+sysvinit (3.08-4) experimental; urgency=medium
+
+  [ Guillem Jover ]
+  * initscripts: Set PATH in udev init script to include stat program.
+
+  [ Johannes Schauer Marin Rodrigues ]
+  * postinst: respect DPKG_ROOT environment variable (Closes: #1056213).
+
+  [ Mark Hindley ]
+  * Update Swedish debconf translation with thanks to Martin Bagge
+    <brother@persilja.net>.  (Closes: #1056954)
+
+ -- Mark Hindley <leepen@debian.org>  Mon, 27 Nov 2023 18:45:44 +0000
+
 sysvinit (3.08-3) unstable; urgency=medium
 
   * Release to unstable

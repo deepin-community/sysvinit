@@ -13,7 +13,7 @@
 Version information is not placed in the top-level Makefile by default
 */
 #ifndef VERSION
-#define VERSION "3.01"
+#define VERSION "3.10"
 #endif
 /*
  *		This file is part of the sysvinit suite,
@@ -133,6 +133,13 @@ CHILD ch_emerg = {		/* Emergency shell */
 	"/sbin/sulogin",
 	NULL,
 	NULL
+};
+
+CHILD ch_poweroff = {
+	.action = ONCE,
+	.id = "~~",
+	.rlevel = "S",
+	.process = "/sbin/shutdown -hP now"
 };
 
 char runlevel = 'S';		/* The current run level */
@@ -1106,8 +1113,11 @@ pid_t spawn(CHILD *ch, int *res)
   	/* Give command line to shell */
   	args[1] = SHELL;
   	args[2] = "-c";
-  	strcpy(buf, "exec ");
+  	/* 
+        strcpy(buf, "exec ");
   	strncat(buf, proc, sizeof(buf) - strlen(buf) - 1);
+        */
+        strncpy(buf, proc, sizeof(buf) - strlen(buf) - 1);
   	args[3] = buf;
   	args[4] = NULL;
   } else {
@@ -2717,6 +2727,12 @@ void process_signals()
 	DELSET(got_signals, SIGINT);
   }
 
+  if (ISMEMBER(got_signals, SIGRTMIN+4)) {
+	INITDBG(L_VB, "got SIGRTMIN+4");
+	startup(&ch_poweroff);
+	DELSET(got_signals, SIGRTMIN+4);
+  }
+
   if (ISMEMBER(got_signals, SIGWINCH)) {
 	INITDBG(L_VB, "got SIGWINCH");
 	/* Tell kbrequest entry to start up */
@@ -2858,6 +2874,7 @@ void init_main(void)
   SETSIG(sa, SIGTSTP,  stop_handler, SA_RESTART);
   SETSIG(sa, SIGCONT,  cont_handler, SA_RESTART);
   SETSIG(sa, SIGSEGV,  (void (*)(int))segv_handler, SA_RESTART);
+  SETSIG(sa, SIGRTMIN+4, signal_handler, 0);
 
   console_init();
 
