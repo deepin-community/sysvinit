@@ -8,7 +8,7 @@
 # Short-Description: Start systemd-udevd, populate /dev and load drivers.
 ### END INIT INFO
 
-PATH="/sbin:/bin"
+PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 NAME="systemd-udevd"
 DAEMON="/lib/systemd/systemd-udevd"
 DESC="hotplug events dispatcher"

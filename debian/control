@@ -11,10 +11,9 @@ Uploaders:
 Build-Depends:
  debhelper-compat (= 13),
  libselinux1-dev [linux-any],
- po-debconf,
  po4a,
 Rules-Requires-Root: no
-Standards-Version: 4.6.2
+Standards-Version: 4.7.0
 Homepage: https://github.com/slicer69/sysvinit
 Vcs-Git: https://salsa.debian.org/debian/sysvinit.git
 Vcs-Browser: https://salsa.debian.org/debian/sysvinit
@@ -32,6 +31,9 @@ Depends:
 Conflicts:
  systemd-sysv,
  runit-init,
+ molly-guard (<< 0.8.3~),
+ bfh-container (<< 20211009-24~),
+ progress-linux-container (<< 20221002-12~),
 Breaks:
  manpages-es (<< 4.15.0-9~),
  manpages-fr (<< 4.15.0-9~),
@@ -78,9 +80,10 @@ Description: System-V-like utilities
  init-d-script, fstab-decode, killall5, pidof
  .
  It also contains the library scripts sourced by init-d-script and other
- initscripts that were formally in lsb-base.
+ initscripts that were formerly in lsb-base.
 
 Package: sysv-rc
+Homepage: https://salsa.debian.org/debian/sysvinit
 Architecture: all
 Multi-Arch: foreign
 Depends:
@@ -94,16 +97,17 @@ Description: System-V-like runlevel change mechanism
  configured through symbolic links in /etc/rc?.d/.
 
 Package: initscripts
+Homepage: https://salsa.debian.org/debian/sysvinit
 Architecture: all
 Multi-Arch: foreign
 Depends:
  sysvinit-utils (>= 3.05-1),
  sysv-rc | file-rc | openrc,
- util-linux-extra,
  ${misc:Depends},
 Recommends:
  e2fsprogs,
  psmisc,
+ util-linux-extra,
 Breaks: udev (<<  254.3-1),
 	util-linux-extra (<< 2.39.2-2.1~)
 Replaces: udev (<<  254.3-1),

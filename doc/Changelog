@@ -1,3 +1,46 @@
+sysvinit (3.11) released; urgency=low
+
+    * Some escape characters were included in the inittab manual page, but not displayed
+    by the "man" command because they were not (ironically) properly escaped. This has been
+    fixed.
+
+    * Enabled chaining commands together in the inittab file. This allows the admin
+      to run commands like "task1 && task2" or "task2 || task2" from the inittab file.
+
+    * Fix typoes in halt manual page. Fixes provided by Bjarni Ingi Gislason.
+
+    * Fix typos/markdown in fstab-decode manual page.
+      Patch provided by Bjarni Ingi Gislason.
+
+
+sysvinit (3.10) released; urgency=low
+
+    *  When the user executes "machinectl stop", systemd sends SIGRTMIN+4 to PID 1 
+       in the container, and expects that to initiate a graceful shutdown (power-off).
+       SysV init now catches this signal and initiates a shutdown (shutdown -hP now).
+       - floppym provided patch to accomplish this.
+
+    * Fix issue in bootlogd which could cause the service to enter an endless loop
+      (and use too much CPU) when it is able to open a device for writing, but not actually
+      able to write to it. This resulted in bootlogd closing and re-opening the device over
+      and over. Now bootlogd should simply fail gracefully when it cannot write to an open
+      file/device.
+
+    * Fix formatting in shutdown.8 manual page. Cleaned up whitespace and special characters.
+
+
+sysvinit (3.09) released; urgency=low
+
+    * Patch for man/Makefile to fix the clean recipe.
+      Provided by Lucas Nussabaum and Mark Hindley
+
+    * On Linux systems, allow reboot command to pass a message
+      to the system firmware during the restart. This is
+      accomplished with the -m flag.
+
+    * Patch from kraj which allows hddown to compile
+      when musl is the C library.
+
 sysvinit (3.08) released; urgency=low
     * floppym provided patch which causes the halt command
       to call "shutdown -h -H" instead of "shutdown -h" when

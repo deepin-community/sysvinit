@@ -90,11 +90,11 @@ ifeq ($(DEB_HOST_ARCH_OS), hurd)
 	ln -s halt-sysv.8.gz $(sysvtmp)/usr/share/man/man8/reboot-sysv.8.gz
 	rm $(sysvtmp)/usr/share/man/man8/poweroff.8.gz
 	ln -s halt-sysv.8.gz $(sysvtmp)/usr/share/man/man8/poweroff-sysv.8.gz
-	mv $(sysvtmp)/sbin/halt $(sysvtmp)/sbin/halt-sysv
-	rm $(sysvtmp)/sbin/reboot
-	ln -s halt-sysv $(sysvtmp)/sbin/reboot-sysv
-	rm $(sysvtmp)/sbin/poweroff
-	ln -s halt-sysv $(sysvtmp)/sbin/poweroff-sysv
+	mv $(sysvtmp)/usr/sbin/halt $(sysvtmp)/usr/sbin/halt-sysv
+	rm $(sysvtmp)/usr/sbin/reboot
+	ln -s halt-sysv $(sysvtmp)/usr/sbin/reboot-sysv
+	rm $(sysvtmp)/usr/sbin/poweroff
+	ln -s halt-sysv $(sysvtmp)/usr/sbin/poweroff-sysv
 endif
 
 override_dh_clean:

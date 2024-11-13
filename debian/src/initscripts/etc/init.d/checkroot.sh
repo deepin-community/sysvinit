@@ -174,6 +174,13 @@ Will restart in 5 seconds."
 	if [ -e /run/initramfs/fsck-root ]
 	then
 		rootcheck=no
+		# logsave_best_effort but do not display again
+		if [ -x /sbin/logsave ] && [ -e "${FSCK_LOGFILE}" ]; then
+			logsave -s "${FSCK_LOGFILE}" >/dev/null \
+			    cat /run/initramfs/fsck.log
+		else
+			log_failure_msg "Cannot persist initramfs fsck.log"
+		fi
 	fi
 
 	if is_fastboot_active
