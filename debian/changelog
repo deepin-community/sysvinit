@@ -1,3 +1,79 @@
+sysvinit (3.14-4) unstable; urgency=medium
+
+  * d/control: bump Standards Version (no changes).
+  * Take over /etc/init.d/kmod from src:kmod << 34.1-1 (Closes: #1100072).
+
+ -- Mark Hindley <leepen@debian.org>  Mon, 10 Mar 2025 16:49:51 +0000
+
+sysvinit (3.14-3) unstable; urgency=medium
+
+  * rcS: Default to ASYNCMOUNTNFS=no if ip= or nfsroot= specified on kernel
+    commandline. (Closes: #434570).
+  * if-up.d/mountnfs: only print waiting for interface message if VERBOSE.
+    (Closes: #578247)
+  * d/control:
+    - bump Standards Version (no changes).
+    - bootlogd Conflicts plymouth; they both log to /var/log/boot.log.
+      (Closes: #669017)
+  * d/sysvinit-core.NEWS: add instructions for forcing init switch despite
+    Protected: yes.
+
+ -- Mark Hindley <leepen@debian.org>  Mon, 24 Feb 2025 09:27:01 +0000
+
+sysvinit (3.14-2) experimental; urgency=medium
+
+  [ Mark Hindley ]
+  * mount-functions.sh: only warn about old /dev/shm mount if it is
+    actually present in /etc/fstab. (Closes: #761511)
+  * tmpfs-config.5: clarify that TMPFS_SIZE override requires empty string.
+    (Closes: #987316)
+  * checkroot.sh: create last-resort root device in /dev: /run may be
+    nodev or read-only. (Closes: #1008911)
+  * initscripts README.Debian: update to refer to /etc/default/tmpfs and
+    tmpfs(5).
+  * if-up.d/mountnfs: refactor to use /run and minimise time before
+    registering lockdir cleanup handler.
+  * Ensure stray /run/network/mountnfs lockdir is also cleaned.
+    (Closes: #608862)
+  * rcS(5): document requirement for auto rather than allow-hotplug
+    interfaces with ASYNCMOUNTNFS=no. (Closes: #612519)
+  * d/control: sysvinit-core add Protected: yes. (Closes: #940965)
+  * if-up.d/mountnfs: always no-op if systemd is running. (Closes: #782142).
+
+
+  [ Bjarni Ingi Gislason ]
+  * Bug#1095674: halt.5: Some remarks and a patch with editorial changes
+    for this man page (Closes: 1095674).
+
+  [ Pierre Ynard ]
+  * Bug#686531: Fix checkroot-bootclean.sh fails if rootfs is mounted
+    read-only via NFS (Closes: #686531).
+
+ -- Mark Hindley <leepen@debian.org>  Tue, 18 Feb 2025 08:23:45 +0000
+
+sysvinit (3.14-1) unstable; urgency=medium
+
+  [ Mark Hindley ]
+  * New upstream version 3.14
+  * d/p/0005-workaround-gcc-lintian.patch: drop as no longer applies
+    cleanly and lintian warning is no longer evident.
+
+  [ Helmut Grohne ]
+  * Build-Depends: libcrypt-dev. (Closes: #1094247)
+
+ -- Mark Hindley <leepen@debian.org>  Mon, 10 Feb 2025 09:38:57 +0000
+
+sysvinit (3.13-1) unstable; urgency=medium
+
+  * New upstream version 3.13, includes manpage fixes for init.8 and pidof.8
+    (Closes: #1087343, #1087584)
+  * d/sysvinit-core.postinst:
+    - drop remaining parts of /run/initctl migration: no longer HUP PID 1.
+      (Closes: #1092150)
+    - remove $DPKG_ROOT from directory test: nonsensical after previous test.
+
+ -- Mark Hindley <leepen@debian.org>  Tue, 07 Jan 2025 09:26:24 +0000
+
 sysvinit (3.11-1) unstable; urgency=medium
 
   * New upstream version 3.11.

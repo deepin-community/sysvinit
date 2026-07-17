@@ -41,11 +41,8 @@
 #include <getopt.h>
 #include <dirent.h>
 #include <fcntl.h>
-#ifdef __linux__
+#if defined(__linux__) || defined(__GLIBC__)
 #include <pty.h>
-#endif
-
-#if defined (__linux__) || defined(__GNU__)
 #include <sys/sysmacros.h>
 #endif
 
@@ -417,7 +414,9 @@ void writelog(FILE *fp, unsigned char *ptr, int len, int print_escape_characters
 			char *s;
 			time(&t);
 			s = ctime(&t);
-			fprintf(fp, "%.24s: ", s);
+			if (! s)
+                           s = " ";
+                        fprintf(fp, "%.24s: ", s);
 			dosync = 1;
 			first_run = 0;
 		}
