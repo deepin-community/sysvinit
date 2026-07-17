@@ -13,7 +13,7 @@
 Version information is not placed in the top-level Makefile by default
 */
 #ifndef VERSION
-#define VERSION "3.10"
+#define VERSION "3.14"
 #endif
 /*
  *		This file is part of the sysvinit suite,
@@ -1042,7 +1042,7 @@ static
 pid_t spawn(CHILD *ch, int *res)
 {
   char *args[16];		/* Argv array */
-  char buf[136];		/* Line buffer */
+  char buf[PROCESS_LENGTH * 2];	/* Line buffer */
   int f, st;			/* Scratch variables */
   char *ptr;			/* Ditto */
   time_t t;			/* System time */
@@ -1053,7 +1053,7 @@ pid_t spawn(CHILD *ch, int *res)
   struct sigaction sa;
 
   *res = -1;
-  buf[sizeof(buf) - 1] = 0;
+  buf[sizeof(buf) - 1] = '\0';
 
   /* Skip '+' if it's there */
   if (proc[0] == '+') proc++;
@@ -1450,6 +1450,7 @@ void read_inittab(void)
 {
   FILE		*fp;			/* The INITTAB file */
   FILE		*fp_tab;		/* The INITTABD files */
+  char          *file_status;           /* Are we at the end of the file? */
   CHILD		*ch, *old, *i;		/* Pointers to CHILD structure */
   CHILD		*head = NULL;		/* Head of linked list */
 #ifdef INITLVL
@@ -1471,6 +1472,7 @@ void read_inittab(void)
   DIR 		*tabdir=NULL;		/* the INITTAB.D dir */
   struct dirent *file_entry;		/* inittab.d entry */
   char 		f_name[272];		/* size d_name + strlen /etc/inittad.d/ */
+  int           skip_this_line = FALSE; /* Is there something wrong with this config file? */
 
 #if DEBUG
   if (newFamily != NULL) {
@@ -1492,11 +1494,13 @@ void read_inittab(void)
   if( (tabdir = opendir(INITTABD))==NULL)
 	  initlog(L_VB, "No inittab.d directory found");
 
-  while(done!=1) {
+  while(done != 1) {
+        skip_this_line = FALSE;
 	/*
 	 *	Add single user shell entry at the end.
 	 */
-	if(done == -1) {
+        memset(buf, '\0', sizeof(buf));
+	if (done == -1) {
 		if (fp == NULL || fgets(buf, sizeof(buf), fp) == NULL) {
 			done = 0;
 			/*
@@ -1509,7 +1513,18 @@ void read_inittab(void)
 			else
 				continue;
 		}
-	} /* end if( done==-1) */
+                /* We have read a line, clear the file to the
+                   end of the line if the buffer is full. */
+                else
+                {
+                   if ( (! strchr(buf, '\n') ) ||
+                        ( strlen(buf) >= sizeof(buf) ) )
+                   {
+                        get_void(fp);
+                        skip_this_line = TRUE;
+                   }
+                }
+	} /* end if( done == -1) */
 	else if ( done == 0 ){
 		/* parse /etc/inittab.d and read all .tab files */
 		if(tabdir!=NULL){
@@ -1531,10 +1546,23 @@ void read_inittab(void)
 				if ((fp_tab = fopen(f_name, "r")) == NULL)
 					continue;
 				/* read the file while the line contain comment */
-				while( fgets(buf, sizeof(buf), fp_tab) != NULL) {
+                                memset(buf, '\0', sizeof(buf));
+                                file_status = fgets(buf, sizeof(buf), fp_tab);
+				while( file_status != NULL) {
+                                        printf("Got line: %s\n", buf);
 					for(p = buf; *p == ' ' || *p == '\t'; p++);
 					if (*p != '#' && *p != '\n')
 						break;
+                                        /* If the buffer is full, make sure we move ahead
+                                           in the file to clear the line. */
+                                        if ( (! strchr(buf, '\n') ) || 
+                                             ( strlen(buf) >= sizeof(buf)) )
+                                        {
+                                            get_void(fp_tab);
+                                            skip_this_line = TRUE;
+                                        }
+                                        memset(buf, '\0', sizeof(buf));
+                                        file_status = fgets(buf, sizeof(buf), fp_tab);
 				}
 				fclose(fp_tab);
 				/* do some checks */
@@ -1559,6 +1587,13 @@ void read_inittab(void)
 		;
 	if (*p == '#' || *p == '\n') continue;
 
+        /* There was something wrong with this line, skip adding it to our rules. */
+        if (skip_this_line)
+        {
+	   initlog(L_VB, "Error detected in %s at line %d. Possibly too long.", INITTAB, lineNo);
+           continue;
+        }
+
 	/*
 	 *	Decode the fields
 	 */
@@ -1580,11 +1615,11 @@ void read_inittab(void)
 	if (id && strlen(id) > sizeof(utproto.ut_id))
 		sprintf(err, "id field too long (max %d characters)",
 			(int)sizeof(utproto.ut_id));
-	if (rlevel && strlen(rlevel) > 11)
+	if (rlevel && strlen(rlevel) > (RUNLEVEL_LENGTH - 1))
 		strcpy(err, "rlevel field too long (max 11 characters)");
-	if (process && strlen(process) > 127)
-		strcpy(err, "process field too long (max 127 characters)");
-	if (action && strlen(action) > 32)
+	if (process && strlen(process) > (PROCESS_LENGTH / 2))
+ 	     snprintf(err, 63, "process field too long (max %d characters)", PROCESS_LENGTH / 2);
+	if (action && strlen(action) > (ACTION_LENGTH - 1))
 		strcpy(err, "action field too long");
 	if (err[0] != 0) {
 		initlog(L_VB, "%s[%d]: %s", INITTAB, lineNo, err);
@@ -1629,7 +1664,7 @@ void read_inittab(void)
 	 */
 	ch->action = actionNo;
 	strncpy(ch->id, id, sizeof(utproto.ut_id) + 1); /* Hack for different libs. */
-	strncpy(ch->process, process, sizeof(ch->process) - 1);
+	strncpy(ch->process, process, PROCESS_LENGTH - 2);
 	if (rlevel[0]) {
 		for(f = 0; f < (int)sizeof(rlevel) - 1 && rlevel[f]; f++) {
 			ch->rlevel[f] = rlevel[f];

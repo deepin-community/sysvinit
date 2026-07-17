@@ -42,7 +42,7 @@ INITSCRIPTS="mountkernfs.sh mount-configfs brightness hostname.sh mountdevsubfs.
 	checkroot-bootclean.sh checkfs.sh mountall.sh mountall-bootclean.sh \
 	mountnfs.sh mountnfs-bootclean.sh bootmisc.sh urandom halt reboot \
 	udev umountroot umountfs umountnfs.sh sendsigs killprocs single motd \
-	bootlogs rc.local rmnologin hwclock.sh"
+	bootlogs rc.local rmnologin hwclock.sh kmod"
 
 for F in $INITSCRIPTS; do
 	if [ -x "$DPKG_ROOT/etc/init.d/$F" ]; then

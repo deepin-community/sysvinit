@@ -384,7 +384,9 @@ run_migrate ()
 	if [ ! -L "$OLD" ] && [ -d "$OLD" ] ; then
 		if [ "$OLD" != "/tmp" ]; then
 			log_warning_msg "Filesystem mounted on $OLD; setting up compatibility bind mount."
-			log_warning_msg "Please remove this mount from /etc/fstab; it is no longer needed, and it is preventing completion of the transition to $RUN."
+			if read_fstab_entry "$OLD" ; then
+				log_warning_msg "Please remove this mount from /etc/fstab; it is no longer needed, and it is preventing completion of the transition to $RUN."
+			fi
 		fi
 		mount -t $FSTYPE "$RUN" "$OLD" $OPTS
 	else

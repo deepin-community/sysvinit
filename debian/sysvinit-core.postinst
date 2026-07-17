@@ -7,54 +7,13 @@ set -e
 
 # Restart init.
 do_restart() {
-	INITCTL=/run/initctl
-	case "$(uname -s)" in
-	  *FreeBSD)
-		OLDINITCTL=/etc/.initctl
-		;;
-	  *)
-		OLDINITCTL=/dev/initctl
-		;;
-	esac
-
-	# PID of init; may not always be 1 but this code isn't run in
-	# these cases (Hurd).  Use for sending signals and checking if
-	# init is running.
-	PID=1
-
-	# Create /run/initctl if not present, and also create compatibility
-	# symlinks
-	if [ ! -p "$INITCTL" ]
-	then
-		# Create new control channel
-		echo "sysvinit: creating $INITCTL"
-		rm -f $INITCTL
-		mkfifo -m 600 $INITCTL
-	fi
-
-	# Replace old control channel with symlink
-	ln -s "$INITCTL" "$OLDINITCTL.new"
-	mv "$OLDINITCTL.new" "$OLDINITCTL"
-
-	# Reopen control channel (uses new channel).
-	kill -s USR1 "$PID"
-
-	# Tell init to re-exec itself. Loop on failure to reduce the chance of a
-	# race before the new control channel is opened.
+	# Tell init to re-exec itself.
 	echo -n "sysvinit: restarting..."
-	for delay in 0 1 2 3 4 5 6 fail; do
-		if init u; then
-			echo " done."
-			break
-		else
-			if [ "$delay" = "fail" ]; then
-				echo " failed."
-			else
-				echo -n "."
-				sleep "$delay"
-			fi
-		fi
-	done
+	if init u; then
+		echo " done."
+	else
+		echo " failed."
+	fi
 }
 
 umask 022
@@ -86,7 +45,8 @@ esac
 
 if ischroot --default-true ||
 	[ -n "${DPKG_ROOT:-}" ] ||
-	[ -d "$DPKG_ROOT/run/systemd/system" ] ||
+	[ -d "/run/systemd/system" ] ||
+	[ ! -p "/run/initctl" ] ||
 	[ "$(uname -s)" = "GNU" ]; then
 	skip_restart=1
 fi
