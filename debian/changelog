@@ -1,9 +1,3 @@
-sysvinit (3.14-5) unstable; urgency=medium
-
-  * Rebuild with LTO enabled (dpkg vendor feature optimize/lto).
-
- -- tunaichao <tunaichao@uniontech.com>  Fri, 11 Sep 2026 18:06:41 +0800
-
 sysvinit (3.14-4) unstable; urgency=medium
 
   * d/control: bump Standards Version (no changes).
